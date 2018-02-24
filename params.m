@@ -22,5 +22,10 @@ base_calories = 2000; %Calories
 % parameters for lab space calculations
 avg_equip_size = 0.15; %m^2
 equip_size_range = 0.02; %m^2
-lab_space_per_person = 0.02; %m^2
-max_lab_space = 46.45; %m^2 (500 sqft)
+lab_space_per_person = 0.12; %m^2
+max_lab_space = 18.58; %m^2 (200 sqft)
+
+% parameters for farm space calculations
+farm_per_person = 61; %m^2
+farm_time_cutoff = 730; %days
+

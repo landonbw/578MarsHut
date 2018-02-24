@@ -6,7 +6,10 @@ function [ size ] = cal_storage_space( num_people, resupply_rate, avg_calories )
 % size = cubic meters of that need to be dedicated to storage
 params;
 % how long we need to store food = resupply_rate
+if resupply_rate > farm_time_cutoff
+  resupply_rate = farm_time_cutoff;
+end
 space_per_day = water_per_day * hygene_per_day *...
                 (food_per_day * avg_calories / base_calories) * num_people;
-size = space_per_day * min([resupply_rate, max_time]);
+size = space_per_day * resupply_rate;
 end
