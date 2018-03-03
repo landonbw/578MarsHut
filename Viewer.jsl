@@ -1,0 +1,77 @@
+huts = Scene Display List();
+habRad = 0.5;
+labRad = 0.5;
+farmRad = 0.5;
+stoRad = 0.5;
+
+
+// make the scene
+scene = Scene Box(600, 600);
+habSlider = Slider Box(0.1, 3, habRad, drawStation(habRad, labRad, farmRad, stoRad));
+labSlider = Slider Box(0.1, 3, labRad, drawStation(habRad, labRad, farmRad, stoRad));
+farmSlider = Slider Box(0.1, 3, farmRad, drawStation(habRad, labRad, farmRad, stoRad));
+stoSlider = Slider Box(0.1, 3, stoRad, drawStation(habRad, labRad, farmRad, stoRad));
+
+
+//New Window("Huts", scene);
+New Window("Huts", Panel Box("huts", scene, habSlider, labSlider, farmSlider, stoSlider));
+
+drawStation(habRad, labRad, farmRad, stoRad);
+
+drawStation = Function( {habRad, labRad, farmRad, stoRad},
+	gapOffset = 1.1;
+	scene << clear;
+	huts << clear;
+
+	huts << Shade Model(smooth);
+	huts << Light(Light0, POSITION, 7, 0, 5, 1);
+	huts << Enable(Lighting);
+	huts << Enable(Light0);
+	huts << Enable(COLOR_MATERIAL);
+	huts << Color(0.8, 0.8, 0.8);
+	huts << Material(Front_and_back, Specular, 1, 1, 1, 1);
+	huts << Material(Front_and_back, Shininess, 128);
+	//huts << Polygon Mode (FRONT_AND_BACK, LINE);
+	
+	huts << Push Matrix;
+	huts << Sphere(habRad, 15, 15);
+	huts << Pop Matrix;
+
+	huts << Push Matrix;
+	huts << Translate((habRad + labRad) * gapOffset, 0, 0);
+	huts << Sphere(labRad, 15, 15);
+	huts << Pop Matrix;
+
+	huts << Push Matrix;
+	huts << Translate((habRad + farmRad) * gapOffset * -1/2, (habRad + farmRad) * gapOffset * sqrt(3)/2, 0);
+	huts << Sphere(farmRad, 15, 15);
+	huts << Pop Matrix;
+
+	huts << Push Matrix;
+	huts << Translate((habRad + stoRad) * gapOffset * -1/2, -(habRad + stoRad) * gapOffset * sqrt(3)/2, 0);
+	huts << Sphere(stoRad, 15, 15);
+	huts << Pop Matrix;
+
+	huts << Push Matrix;
+	huts << Color(0.8, 0.5, 0.2);
+	huts << Polygon Mode (FRONT_AND_BACK, FILL);
+	huts << Material(Front_and_back, Specular, 0, 0, 0, 1);
+	huts << Material(FRONT_AND_BACK, Shininess, 10);
+	huts << Begin(POLYGON);
+	gap = 10;
+	huts << Normal(0, 0, 1);
+	huts << Vertex(gap, gap, 0);
+	huts << Normal(0, 0, 1);
+	huts << Vertex(gap, -gap, 0);
+	huts << Normal(0, 0, 1);
+	huts << Vertex(-gap, -gap, 0);
+	huts << Normal(0, 0, 1);
+	huts << Vertex(-gap, gap, 0);
+	huts << Normal(0, 0, 1);
+	huts << end();
+	huts << Pop Matrix;
+	scene << Perspective(45, 3, 20);
+	scene << Translate(0, 0, -14.5);
+	scene << ArcBall(huts, 5);
+	scene << Update;
+);

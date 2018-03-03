@@ -6,7 +6,7 @@ function [ size ] = cal_lab_size( num_people, num_equip )
 %             given day. (1-100)
 % size = square meters of space that need to be dedicated to lab space
 params;
-equip_sizes = randn([1,num_equip]) * equip_size_range + avg_equip_size;
+equip_sizes = randn([1,floor(num_equip)]) * equip_size_range + avg_equip_size;
 min_lab_size = sum(equip_sizes);
 people_space = num_people * lab_space_per_person;
 size = max([min_lab_size, people_space]);
