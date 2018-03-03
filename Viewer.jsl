@@ -1,3 +1,4 @@
+Clear Globals();
 huts = Scene Display List();
 habRad = 0.5;
 labRad = 0.5;
@@ -16,10 +17,12 @@ stoSlider = Slider Box(0.1, 3, stoRad, drawStation(habRad, labRad, farmRad, stoR
 //New Window("Huts", scene);
 New Window("Huts", Panel Box("huts", scene, habSlider, labSlider, farmSlider, stoSlider));
 
-drawStation(habRad, labRad, farmRad, stoRad);
 
 drawStation = Function( {habRad, labRad, farmRad, stoRad},
 	gapOffset = 1.1;
+	tunnelRad = 0.2;
+	nSlices = 25;
+	gap = 20;
 	scene << clear;
 	huts << clear;
 
@@ -29,49 +32,87 @@ drawStation = Function( {habRad, labRad, farmRad, stoRad},
 	huts << Enable(Light0);
 	huts << Enable(COLOR_MATERIAL);
 	huts << Color(0.8, 0.8, 0.8);
-	huts << Material(Front_and_back, Specular, 1, 1, 1, 1);
-	huts << Material(Front_and_back, Shininess, 128);
+	//huts << Material(Front_and_back, Specular, 1, 1, 1, 1);
+	//huts << Material(Front_and_back, Shininess, 128);
 	//huts << Polygon Mode (FRONT_AND_BACK, LINE);
-	
+
+	// draw the center habitation
 	huts << Push Matrix;
-	huts << Sphere(habRad, 15, 15);
+	huts << Color(0.8, 0.8, 0.8);
+	huts << Sphere(habRad, nSlices, nSlices);
 	huts << Pop Matrix;
 
+	// draw the lab
 	huts << Push Matrix;
+	huts << Color(0.8, 0.8, 0.8);
 	huts << Translate((habRad + labRad) * gapOffset, 0, 0);
-	huts << Sphere(labRad, 15, 15);
+	huts << Sphere(labRad, nSlices, nSlices);
 	huts << Pop Matrix;
 
+	// draw hab to lab tunnel
+	huts << push Matrix;
+	huts << Color(0.3, 0.3, 0.3);
+	huts << rotate(90, 0, 1, 0);
+	huts << cylinder(min(tunnelRad, habRad), min(tunnelRad, labRad), (habRad + labRad) * gapOffset, 15, 5);
+	huts << Pop Matrix;
+
+	// draw the farm
 	huts << Push Matrix;
+	huts << Color(0.8, 0.8, 0.8);
 	huts << Translate((habRad + farmRad) * gapOffset * -1/2, (habRad + farmRad) * gapOffset * sqrt(3)/2, 0);
-	huts << Sphere(farmRad, 15, 15);
+	huts << Sphere(farmRad, nSlices, nSlices);
 	huts << Pop Matrix;
 
+	// draw hab to farm tunnel
+	huts << push Matrix;
+	huts << Color(0.3, 0.3, 0.3);
+	huts << rotate(120, 0, 0, 1);
+	huts << rotate(90, 0, 1, 0);
+	huts << cylinder(min(tunnelRad, habRad), min(tunnelRad, farmRad), (habRad + farmRad) * gapOffset, 15, 5);
+	huts << Pop Matrix;
+
+	// draw the storage
 	huts << Push Matrix;
+	huts << Color(0.8, 0.8, 0.8);
 	huts << Translate((habRad + stoRad) * gapOffset * -1/2, -(habRad + stoRad) * gapOffset * sqrt(3)/2, 0);
-	huts << Sphere(stoRad, 15, 15);
+	huts << Sphere(stoRad, nSlices, nSlices);
 	huts << Pop Matrix;
 
+	// draw hab to storage tunnel
+	huts << push Matrix;
+	huts << Color(0.3, 0.3, 0.3);
+	huts << rotate(240, 0, 0, 1);
+	huts << rotate(90, 0, 1, 0);
+	huts << cylinder(min(tunnelRad, habRad), min(tunnelRad, stoRad), (habRad + stoRad) * gapOffset, 15, 5);
+	huts << Pop Matrix;
+
+	// draw the ground
 	huts << Push Matrix;
 	huts << Color(0.8, 0.5, 0.2);
 	huts << Polygon Mode (FRONT_AND_BACK, FILL);
 	huts << Material(Front_and_back, Specular, 0, 0, 0, 1);
 	huts << Material(FRONT_AND_BACK, Shininess, 10);
-	huts << Begin(POLYGON);
-	gap = 10;
-	huts << Normal(0, 0, 1);
-	huts << Vertex(gap, gap, 0);
-	huts << Normal(0, 0, 1);
-	huts << Vertex(gap, -gap, 0);
-	huts << Normal(0, 0, 1);
-	huts << Vertex(-gap, -gap, 0);
-	huts << Normal(0, 0, 1);
-	huts << Vertex(-gap, gap, 0);
-	huts << Normal(0, 0, 1);
-	huts << end();
+	// huts << Begin(POLYGON);
+	// huts << Normal(0, 0, 1);
+	// huts << Vertex(gap, gap, 0);
+	// huts << Normal(0, 0, 1);
+	// huts << Vertex(gap, -gap, 0);
+	// huts << Normal(0, 0, 1);
+	// huts << Vertex(-gap, -gap, 0);
+	// huts << Normal(0, 0, 1);
+	// huts << Vertex(-gap, gap, 0);
+	// huts << Normal(0, 0, 1);
+	// huts << end();
+	huts << Disk(0, 20, 10, 10);
+	huts << cylinder(0, 20 -20, 20, 20);
 	huts << Pop Matrix;
-	scene << Perspective(45, 3, 20);
-	scene << Translate(0, 0, -14.5);
+	//scene << Translate(-10, 0, -14.5);
+
+
+	scene << Perspective(55, 3, 20);
+	scene << LookAt(0, -6, 10.5, 0, 0, 0, 0, 0, 1);
 	scene << ArcBall(huts, 5);
 	scene << Update;
 );
+
+drawStation(habRad, labRad, farmRad, stoRad);
